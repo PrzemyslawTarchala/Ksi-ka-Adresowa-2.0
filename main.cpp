@@ -125,8 +125,6 @@ bool LogIn(vector <User> users){
 
         for (User singleUser : users){
             if (tempUser.login == singleUser.login && tempUser.password == singleUser.password){
-                cout << "Successful!\n";
-                system ("pause");
                 return loginStatus = true;
                 break;
             }
@@ -176,7 +174,7 @@ void mainMenus(vector <User>& users, vector <Contact>& contacts){
         }
         while (loginStatus == true) {
             system("cls");
-            cout << "--- Logged ---\n";
+            cout << "----- LOGGED -----\n";
             cout << "1. Add contact\n";
             cout << "2. Search Adress by name\n";
             cout << "3. Search Adress by lastname\n";
@@ -186,7 +184,7 @@ void mainMenus(vector <User>& users, vector <Contact>& contacts){
             cout << "7*. Amount of contacts\n";
             cout << "-----------------------------\n";
             cout << "8. Edit password\n";
-            cout << "9. Log out\n\n";
+            cout << "9. Log out\n";
             cout << "-----------------------------\n";
             cout << "Enter choice: ";
             choice = getChar();
