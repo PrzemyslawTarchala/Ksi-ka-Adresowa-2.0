@@ -29,6 +29,9 @@ char getChar(){
     return sign;
 }
 
+
+
+// PONIZEJ WSZYSTKO DLA OKNA LOGOWANIE / REJESTRACJI
 void getUsersFromFile(vector <User> & users){
 
     User tempUser;
@@ -106,9 +109,10 @@ void signUp(vector <User>& users){
     system ("pause");
 }
 
-void LogIn(vector <User> users){
+bool LogIn(vector <User> users){
 
     User tempUser;
+    bool loginStatus = false;
 
     cout << "--- SignUp ---\n";
     if (users.size() == 0){
@@ -123,11 +127,15 @@ void LogIn(vector <User> users){
             if (tempUser.login == singleUser.login && tempUser.password == singleUser.password){
                 cout << "Successful!\n";
                 system ("pause");
+                return loginStatus = true;
                 break;
             }
         }
-        cout << "Invalid login or password.\n";
-        system ("pause");
+        if (loginStatus != true){
+            cout << "Invalid login or password.\n";
+            system ("pause");
+            return loginStatus = false;
+        }
     }
 }
 
@@ -139,31 +147,70 @@ void viewAll (vector <User> users){
     system ("pause");
 }
 
-void mainMenu(vector <User>& users, vector <Contact>& contacts){
+void mainMenus(vector <User>& users, vector <Contact>& contacts){
 
     char choice;
     bool loginStatus = false;
-
     while (1){
-        system("cls");
-        cout << "----------MAIN MENU----------" << endl;
-        cout << "1. Sign up\n";
-        cout << "2. Log in\n";
-        cout << "3. View All\n";
-        cout << "9. Exit\n";
-        cout << "-----------------------------\n";
-        cout << "Enter choice: ";
-        choice = getChar();
-        switch (choice){
-            case '1': signUp(users);
-                break;
-            case '2': LogIn(users);
-                break;
-            case '3': viewAll(users);
-                break;
-            case '9': exit(0);
-                break;
-            default: cout << "Wrong choice!\n"; system ("pause");
+        while (loginStatus == false){
+            system("cls");
+            cout << "----------MAIN MENU----------" << endl;
+            cout << "1. Sign up\n";
+            cout << "2. Log in\n";
+            cout << "3. View All\n";
+            cout << "9. Exit\n";
+            cout << "-----------------------------\n";
+            cout << "Enter choice: ";
+            choice = getChar();
+            switch (choice){
+                case '1': signUp(users);
+                    break;
+                case '2': loginStatus = LogIn(users);
+                    break;
+                case '3': viewAll(users);
+                    break;
+                case '9': exit(0);
+                    break;
+                default: cout << "Wrong choice!\n"; system ("pause");
+            }
+        }
+        while (loginStatus == true) {
+            system("cls");
+            cout << "--- Logged ---\n";
+            cout << "1. Add contact\n";
+            cout << "2. Search Adress by name\n";
+            cout << "3. Search Adress by lastname\n";
+            cout << "4. View all contacts\n";
+            cout << "5. Delete contact\n";
+            cout << "6. Edit contact\n";
+            cout << "7*. Amount of contacts\n";
+            cout << "-----------------------------\n";
+            cout << "8. Edit password\n";
+            cout << "9. Log out\n\n";
+            cout << "-----------------------------\n";
+            cout << "Enter choice: ";
+            choice = getChar();
+            switch (choice){
+                /*case '1': signUp(users);
+                    break;
+                case '2': loginStatus = LogIn(users);
+                    break;
+                case '3': viewAll(users);
+                    break;
+                case '4': exit(0);
+                    break;
+                case '5': signUp(users);
+                    break;
+                case '6': loginStatus = LogIn(users);
+                    break;
+                case '7': viewAll(users);
+                    break;
+                case '8': signUp(users);
+                    break;*/
+                case '9': loginStatus = false;
+                    break;
+                default: cout << "Wrong choice!\n"; system ("pause");
+            }
         }
     }
 }
@@ -178,6 +225,6 @@ int main() {
     getUsersFromFile (users);
 
     //Main menu
-    mainMenu(users, contacts);
+    mainMenus(users, contacts);
     return 0;
 }
