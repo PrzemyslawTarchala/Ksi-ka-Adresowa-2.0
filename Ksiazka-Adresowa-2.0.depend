@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1679432680 source:c:\kurspp\repos\ksiazka-adresowa-2.0\main.cpp
+1679730408 source:c:\kurspp\repos\ksiazka-adresowa-2.0\main.cpp
 	<iostream>
 	<stdio.h>
 	<vector>
