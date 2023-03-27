@@ -5,6 +5,8 @@
 
 using namespace std;
 
+// OGOLNE
+
 struct User {
     int userID = 0;
     string login, password;
@@ -29,9 +31,242 @@ char getChar(){
     return sign;
 }
 
+// PONIZEJ WSZYSTKO DLA OKNA UZYTKOWANIKA
 
+void templemateContactView (Contact singleContact){
+
+    cout << "ID:           " << singleContact.idContact << endl;
+    cout << "Name:         " << singleContact.name << endl;
+    cout << "Lastname:     " << singleContact.lastname << endl;
+    cout << "Phone number: " << singleContact.phoneNumber << endl;
+    cout << "Mail adress:  " << singleContact.mail << endl;
+    cout << "Adress:       " << singleContact.adress << endl;
+    cout << endl;
+}
+
+void searchBy(vector <Contact> contacts, int choice){
+
+    bool isFindAnyone = false;
+    string tempString = "";
+
+    if (choice == 0){
+        cout << "Enter name: "; cin >> tempString;
+        for (Contact singleContact : contacts){
+            if (singleContact.name == tempString){
+                templemateContactView(singleContact);
+                isFindAnyone = true;
+            }
+        }
+    }
+    else if (choice == 1){
+        cout << "Enter lastname: "; cin >> tempString;
+        for (Contact singleContact : contacts){
+            if (singleContact.lastname == tempString){
+                templemateContactView(singleContact);
+                isFindAnyone = true;
+            }
+        }
+    }
+    if (isFindAnyone == false){
+        cout << "Cant find anyone.\n\n";
+    }
+    system("pause");
+}
+
+void viewAllContactsForSpecUsers(vector <Contact> contacts, int currentID){
+
+    bool isFindAnyone = false;
+
+    for (Contact singleContact : contacts){
+        if (singleContact.idUser == currentID){
+            templemateContactView(singleContact);
+            isFindAnyone = true;
+        }
+    }
+    if (isFindAnyone == false){
+        cout << "Cant find anyone.\n\n";
+    }
+    system("pause");
+}
+
+void toFileEditContact (vector <Contact> contacts, int id) { //konwersja na stringa
+
+    string line;
+    string stringPom = "";
+    int signPosition, tempId;
+
+    fstream tempFile, file;
+    file.open ("Contacts.txt", ios::in);
+    tempFile.open ("TempContacts.txt", ios::out | ios::app);
+
+    if (file.good() == true){
+        while (getline(file, line)){
+            signPosition = 0;
+            stringPom = "";
+            while (line[signPosition] != '|'){
+                stringPom += line[signPosition];
+                ++ signPosition;
+            }
+            tempId = stoi(stringPom);
+            if (tempId != id){
+                tempFile << line << endl;
+            }
+            else{
+                for (Contact singleUser : contacts){
+                    if(singleUser.idContact == id){
+                        tempFile << singleUser.idContact << "|" << singleUser.idUser << "|" << singleUser.name << "|" << singleUser.lastname << "|" << singleUser.phoneNumber << "|" << singleUser.mail << "|" << singleUser.adress << "|" << endl;
+                    }
+                }
+            }
+        }
+    }
+    file.close();
+    tempFile.close();
+    remove("Contacts.txt");
+    rename("TempContacts.txt", "Contacts.txt");
+}
+
+void editContact(vector <Contact> & contacts){
+
+    bool isFindAnyone = false;
+    int id, choice;
+    string newName, newLastname, newPhoneNumber, newMail, newAdress;
+
+    system ("cls");
+    cout << "Enter ID: "; cin >> id;
+
+    for (Contact & singleContact : contacts){
+        if (singleContact.idContact == id){
+            isFindAnyone = true;
+            cout << "Choose: " << endl;
+            cout << "1. name" << endl;
+            cout << "2. Lastname" << endl;
+            cout << "3. Phone number" << endl;
+            cout << "4. Mail" << endl;
+            cout << "5. Adress" << endl;
+            cout << "6. Back to menu" << endl;
+            cin >> choice;
+            switch (choice){
+                case 1: cout << "Enter new name: "; cin >> newName; singleContact.name = newName; break;
+                case 2: cout << "Enter new lastname: "; cin >> newLastname; singleContact.lastname = newLastname; break;
+                case 3: cout << "Enter new phone number: "; cin >> newPhoneNumber; singleContact.phoneNumber = newPhoneNumber; break;
+                case 4: cout << "Enter new mail: "; cin >> newMail; singleContact.mail = newMail; break;
+                case 5: cout << "Enter new adress: "; cin >> newAdress; singleContact.adress = newAdress; break;
+                case 6: break;
+            }
+        }
+    }
+    toFileEditContact(contacts, id);
+
+    if (isFindAnyone == false){
+        cout << "Incorrent ID.\n";
+    }
+    system ("pause");
+}
+
+void toFileNewContact (Contact newContact){
+
+    fstream file;
+    file.open("Contacts.txt", ios::out | ios::app);
+    file << newContact.idContact << "|" << newContact.idUser << "|" << newContact.name << "|" << newContact.lastname << "|" << newContact.phoneNumber << "|" << newContact.mail << "|" << newContact.adress << "|" << endl;
+    file.close();
+}
+
+int getIdForNewContact (vector <Contact> contacts){
+
+    int newID = 0;
+    for (Contact singleContact : contacts){
+        newID = singleContact.idContact;
+    }
+    return newID + 1;
+}
+
+void addContact (int currentID, vector <Contact>& contacts){
+
+    Contact newContact;
+
+    cout << "Enter name: "; newContact.name = getWholeLine();
+    cout << "Enter last name: "; newContact.lastname = getWholeLine();
+    cout << "Enter phone number: "; newContact.phoneNumber = getWholeLine();
+    cout << "Enter mail adress: "; newContact.mail = getWholeLine();
+    cout << "Enter adress: "; newContact.adress = getWholeLine();
+    newContact.idUser = currentID;
+    newContact.idContact = getIdForNewContact(contacts);
+
+    contacts.push_back(newContact);
+    toFileNewContact(newContact);
+    cout << "Successful!\n"; system ("pause");
+}
+
+void changeToFile (vector <User> users){
+
+    fstream tempFile;
+    tempFile.open("TempFILE.txt", ios::out | ios::app);
+    for (User singleUser : users){
+        tempFile << singleUser.userID << "|" << singleUser.login << "|" << singleUser.password << "|" << endl;
+    }
+    tempFile.close();
+
+    remove ("Users.txt");
+    rename ("TempFILE.txt", "Users.txt");
+}
+
+int editPassword (vector <User> & users, int currentID){
+
+    string tempPassword = "";
+    cout << "Enter new password: "; tempPassword = getWholeLine();
+    for (User & singleUser : users){
+        if (singleUser.userID == currentID){
+            singleUser.password = tempPassword;
+            break;
+        }
+    }
+    cout << "Password changed.\n";
+    changeToFile(users);
+    system ("pause");
+}
 
 // PONIZEJ WSZYSTKO DLA OKNA LOGOWANIE / REJESTRACJI
+
+void getContactsForSpecUser (User logginUser, vector <Contact> & contacts){
+
+    fstream file;
+    file.open("Contacts.txt", ios::in);
+
+    int signPosition;
+    int currentUserID = logginUser.userID;
+    string stringPom, line;
+    Contact contact;
+
+
+    if (file.good() == true){
+        while (getline(file, line)){
+        signPosition = 0;
+            for (int i = 0; i < 7; ++i){
+                stringPom = "";
+                while (line[signPosition] != '|'){
+                    stringPom += line[signPosition];
+                    ++ signPosition;
+                }
+                switch (i){
+                    case 0: contact.idContact = stoi(stringPom); break;
+                    case 1: contact.idUser = stoi(stringPom); break;
+                    case 2: contact.name = stringPom; break;
+                    case 3: contact.lastname = stringPom; break;
+                    case 4: contact.phoneNumber = stringPom; break;
+                    case 5: contact.mail = stringPom; break;
+                    case 6: contact.adress = stringPom; break;
+                }
+                ++ signPosition; // Przeskakujemy za '|'
+            }
+            if (currentUserID == contact.idUser){
+                contacts.push_back(contact);
+            }
+        }
+        file.close();
+    }
+}
+
 void getUsersFromFile(vector <User> & users){
 
     User tempUser;
@@ -109,12 +344,12 @@ void signUp(vector <User>& users){
     system ("pause");
 }
 
-bool LogIn(vector <User> users){
+int LogIn(vector <User> users, vector <Contact>& contact){ //Musi zwracac ID uzytkownika, do operacji na jego ID
 
     User tempUser;
-    bool loginStatus = false;
+    int id = 0;
 
-    cout << "--- SignUp ---\n";
+    cout << "--- LOG IN ---\n";
     if (users.size() == 0){
         cout << "There is no users. U need to sign up first.\n";
         system ("pause");
@@ -125,14 +360,16 @@ bool LogIn(vector <User> users){
 
         for (User singleUser : users){
             if (tempUser.login == singleUser.login && tempUser.password == singleUser.password){
-                return loginStatus = true;
+                tempUser.userID = singleUser.userID;
+                getContactsForSpecUser (tempUser, contact);
+                return singleUser.userID;
                 break;
             }
         }
-        if (loginStatus != true){
+        if (id  == 0){
             cout << "Invalid login or password.\n";
             system ("pause");
-            return loginStatus = false;
+            return id = 0;
         }
     }
 }
@@ -148,9 +385,9 @@ void viewAll (vector <User> users){
 void mainMenus(vector <User>& users, vector <Contact>& contacts){
 
     char choice;
-    bool loginStatus = false;
+    int currentID = 0;
     while (1){
-        while (loginStatus == false){
+        if (currentID == 0){
             system("cls");
             cout << "----------MAIN MENU----------" << endl;
             cout << "1. Sign up\n";
@@ -163,7 +400,7 @@ void mainMenus(vector <User>& users, vector <Contact>& contacts){
             switch (choice){
                 case '1': signUp(users);
                     break;
-                case '2': loginStatus = LogIn(users);
+                case '2': currentID = LogIn(users, contacts);
                     break;
                 case '3': viewAll(users);
                     break;
@@ -172,7 +409,7 @@ void mainMenus(vector <User>& users, vector <Contact>& contacts){
                 default: cout << "Wrong choice!\n"; system ("pause");
             }
         }
-        while (loginStatus == true) {
+        else {
             system("cls");
             cout << "----- LOGGED -----\n";
             cout << "1. Add contact\n";
@@ -181,31 +418,31 @@ void mainMenus(vector <User>& users, vector <Contact>& contacts){
             cout << "4. View all contacts\n";
             cout << "5. Delete contact\n";
             cout << "6. Edit contact\n";
-            cout << "7*. Amount of contacts\n";
             cout << "-----------------------------\n";
+            cout << "7. Yours ID.\n";
             cout << "8. Edit password\n";
             cout << "9. Log out\n";
             cout << "-----------------------------\n";
             cout << "Enter choice: ";
             choice = getChar();
             switch (choice){
-                /*case '1': signUp(users);
+                case '1': addContact(currentID, contacts);
                     break;
-                case '2': loginStatus = LogIn(users);
+                case '2': searchBy(contacts, 0);
                     break;
-                case '3': viewAll(users);
+                case '3': searchBy(contacts, 1);
                     break;
-                case '4': exit(0);
+                case '4': viewAllContactsForSpecUsers(contacts, currentID);
+                    break;/*
+                case '5': deleteContact();
+                    break; */
+                case '6': editContact(contacts);
                     break;
-                case '5': signUp(users);
+                case '7': cout << "Yours ID: " << currentID << endl; system ("pause");
                     break;
-                case '6': loginStatus = LogIn(users);
+                case '8': editPassword(users, currentID);
                     break;
-                case '7': viewAll(users);
-                    break;
-                case '8': signUp(users);
-                    break;*/
-                case '9': loginStatus = false;
+                case '9': contacts.clear(); currentID = 0;
                     break;
                 default: cout << "Wrong choice!\n"; system ("pause");
             }
