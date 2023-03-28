@@ -263,7 +263,7 @@ void addContact (int currentID, vector <Contact> & contacts){
     Contact newContact;
 
     system("cls");
-    cout << "      ADDING PASSWORD\n";
+    cout << "      ADDING CONTACT\n";
     cout << "----------------------------\n\n";
     cout << "Enter name:         "; newContact.name = getWholeLine();
     cout << "Enter last name:    "; newContact.lastname = getWholeLine();
